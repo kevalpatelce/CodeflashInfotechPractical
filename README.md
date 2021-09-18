@@ -33,7 +33,7 @@ For development, you will only need Node.js and a node global package, npm, inst
 
 ## Install
 
-    $ git clone https://github.com/kevalpatelce/CodeflashInfotechPractical
+    $ git clone https://github.com/kevalpatelce/CodeflashInfotechPractical.git
     $ cd CodeflashInfotechPractical
     $ npm install
 
