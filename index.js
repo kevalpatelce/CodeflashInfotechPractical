@@ -8,15 +8,16 @@ try {
 				console.log("File read failed:", err);
 				return;
 			}
-		let json_data = JSON.parse(response);   //data which is got after read file and convert into json format
+		let json_data = JSON.parse(response);   //The data that will be found after reading the file and convert into json format
 
 		let insertrecord =[];
 		json_data.forEach(element => {
+			//This validation is only for English language
 
-			let is_alphanumeric  = /^([a-zA-Z0-9 ]+)$/;  // regex for alphanumeric value. This validation is only for English language
-			let is_int  = /[0-9]/;   					 // regex for integer
-			let is_email  = /\S+@\S+\.\S+/;              // regex for email
-			let address_regex  = /^([a-zA-Z0-9, _-]+)$/;  // regex for address
+			const is_alphanumeric  = /^([a-zA-Z0-9 ]+)$/;   // regex for alphanumeric value
+			const is_email  = /\S+@\S+\.\S+/;               // regex for email
+			const address_regex  = /^([a-zA-Z0-9, _-]+)$/;  // regex for address
+			const is_int  = /^([0-9]+)$/;   			    // regex for integer
 
 
 			let name = `${element.title} ${element.first_name} ${element.last_name}`;
@@ -37,10 +38,14 @@ try {
 				element.email = '';  // email like abc@gmail.com
 			}
 
+			if((is_int.test(element.birthdate)) == false){
+				console.log("Error : Birthdate is invalid", element.birthdate);
+				element.birthdate = '';  // birthdate must be digit
+			}
 
 			if((address_regex.test(address)) == false){
 				console.log("Error : Address is inavalid", address);
-				address = ''; // address must be alphanumeric
+				address = ''; // address must be alphanumeric and also inclue {'-','_',','}
 			}
 
 			
@@ -54,14 +59,15 @@ try {
 			})
 		});
 		
-		//generate .excel or .csv file
+		//generate excel or csv file
 		const convertjsontoexcel = () => {
 				const worksheet = XLSX.utils.json_to_sheet(insertrecord);
 				const workbook = XLSX.utils.book_new();
 				XLSX.utils.book_append_sheet(workbook,worksheet,"students");
 				XLSX.write(workbook,{bookType:"xlsx",type:"buffer"});
 				XLSX.write(workbook,{bookType:"xlsx",type:"binary"});
-				XLSX.writeFile(workbook,"userdetail.csv"); // give filename which will be excel or csv
+				XLSX.writeFile(workbook,"userdetail.csv");  // Name the csv file that which will generated
+				// XLSX.writeFile(workbook,"userdetail.xlsx"); // Name the excel file that which will generated
 		};
 
 		convertjsontoexcel();
